@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#111827">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Lista de Compras">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Compras — Arroz Cremoso de Fraldinha</title>
+<style>
+  :root { --bg:#f5f5f5; --card:#fff; --text:#202124; --muted:#6b7280; --line:#e5e7eb; --accent:#111827; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif; background:var(--bg); color:var(--text); }
+  .wrap { max-width:760px; margin:0 auto; padding:24px 16px 40px; }
+  h1 { margin:0 0 6px; font-size:26px; }
+  .subtitle { color:var(--muted); margin-bottom:22px; }
+  .summary { background:var(--accent); color:white; border-radius:14px; padding:16px; display:flex; justify-content:space-between; gap:12px; margin-bottom:18px; }
+  .summary small { display:block; opacity:.75; margin-bottom:4px; }
+  .summary strong { font-size:21px; }
+  .section { background:var(--card); border:1px solid var(--line); border-radius:14px; overflow:hidden; margin-bottom:14px; }
+  .section h2 { font-size:16px; margin:0; padding:13px 14px; background:#fafafa; border-bottom:1px solid var(--line); }
+  .item { display:grid; grid-template-columns:34px 1fr 105px 115px; gap:10px; align-items:center; padding:12px 14px; border-bottom:1px solid var(--line); }
+  .item:last-child { border-bottom:0; }
+  .item.bought { opacity:.55; }
+  .item.bought .name { text-decoration:line-through; }
+  input[type=checkbox] { width:20px; height:20px; }
+  .name { font-weight:600; }
+  .qty { color:var(--muted); font-size:14px; margin-top:3px; }
+  input[type=number] { width:100%; padding:9px 8px; border:1px solid #d1d5db; border-radius:8px; font-size:14px; }
+  .cost { text-align:right; font-variant-numeric:tabular-nums; }
+  .cost-label { font-size:12px; color:var(--muted); }
+  .total { font-size:18px; font-weight:700; }
+  .footer { color:var(--muted); font-size:13px; margin-top:10px; line-height:1.45; }
+  button { border:0; background:#e5e7eb; color:#111827; border-radius:9px; padding:9px 12px; font-weight:600; cursor:pointer; }
+  .actions { display:flex; gap:8px; margin:0 0 14px; }
+  @media (max-width:600px) {
+    .item { grid-template-columns:30px 1fr 88px; }
+    .cost { grid-column:2 / 4; text-align:left; margin-top:-4px; }
+    .summary { flex-direction:column; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Arroz Cremoso de Fraldinha</h1>
+  <div class="subtitle">Lista de compras para <strong>20 pessoas</strong>, considerando a entrada antes do prato principal.</div>
+
+  <div class="summary">
+    <div><small>Itens comprados</small><strong id="progress">0 / 13</strong></div>
+    <div><small>Custo estimado</small><strong id="grandTotal">R$ 0,00</strong></div>
+  </div>
+
+  <div class="actions">
+    <button onclick="markAll()">Marcar todos</button>
+    <button onclick="clearAll()">Desmarcar todos</button>
+  </div>
+
+  <div class="section">
+    <h2>Ingredientes</h2>
+
+    <div class="item">
+      <input type="checkbox" onchange="update()">
+      <div><div class="name">Fraldinha</div><div class="qty">3,3 kg</div></div>
+      <input class="price" type="number" min="0" step="0.01" placeholder="Preço R$">
+      <div class="cost"><div class="cost-label">Custo</div><span>R$ 0,00</span></div>
+    </div>
+
+    <div class="item">
+      <input type="checkbox" onchange="update()">
+      <div><div class="name">Cebola</div><div class="qty">3 unidades</div></div>
+      <input class="price" type="number" min="0" step="0.01" placeholder="Preço R$">
+      <div class="cost"><div class="cost-label">Custo</div><span>R$ 0,00</span></div>
+    </div>
+
+    <div class="item">
+      <input type="checkbox" onchange="update()">
+      <div><div class="name">Cenoura</div><div class="qty">2 unidades</div></div>
+      <input class="price" type="number" min="0" step="0.01" placeholder="Preço R$">
+      <div class="cost"><div class="cost-label">Custo</div><span>R$ 0,00</span></div>
+    </div>
+
+    <div class="item">
+      <input type="checkbox" onchange="update()">
+      <div><div class="name">Salsão</div><div class="qty">3 pedaços/talos</div></div>
+      <input class="price" type="number" min="0" step="0.01" placeholder="Preço R$">
+      <div class="cost"><div class="cost-label">Custo</div><span>R$ 0,00</span></div>
+    </div>
+
+    <div class="item">
+      <input type="checkbox" onchange="update()">
+      <div><div class="name">Cerveja preta</div><div class="qty">3 latas</div></div>
+      <input class="price" type="number" min="0" step="0.01" placeholder="Preço R$">
+      <div class="cost"><div class="cost-label">Custo</div><span>R$ 0,00</span></div>
+    </div>
+
+    <div class="item">
+      <input type="checkbox" onchange="update()">
+      <div><div class="name">Molho de tomate</div><div class="qty">800 g</div></div>
+      <input class="price" type="number" min="0" step="0.01" placeholder="Preço R$">
+      <div class="cost"><div class="cost-label">Custo</div><span>R$ 0,00</span></div>
+    </div>
+
+    <div class="item">
+      <input type="checkbox" onchange="update()">
+      <div><div class="name">Arroz cru</div><div class="qty">1 kg</div></div>
+      <input class="price" type="number" min="0" step="0.01" placeholder="Preço R$">
+      <div class="cost"><div class="cost-label">Custo</div><span>R$ 0,00</span></div>
+    </div>
+
+    <div class="item">
+      <input type="checkbox" onchange="update()">
+      <div><div class="name">Parmesão</div><div class="qty">800 g</div></div>
+      <input class="price" type="number" min="0" step="0.01" placeholder="Preço R$">
+      <div class="cost"><div class="cost-label">Custo</div><span>R$ 0,00</span></div>
+    </div>
+
+    <div class="item">
+      <input type="checkbox" onchange="update()">
+      <div><div class="name">Manteiga</div><div class="qty">270 g</div></div>
+      <input class="price" type="number" min="0" step="0.01" placeholder="Preço R$">
+      <div class="cost"><div class="cost-label">Custo</div><span>R$ 0,00</span></div>
+    </div>
+
+    <div class="item">
+      <input type="checkbox" onchange="update()">
+      <div><div class="name">Salsa</div><div class="qty">2 a 3 maços</div></div>
+      <input class="price" type="number" min="0" step="0.01" placeholder="Preço R$">
+      <div class="cost"><div class="cost-label">Custo</div><span>R$ 0,00</span></div>
+    </div>
+
+    <div class="item">
+      <input type="checkbox" onchange="update()">
+      <div><div class="name">Cebolinha</div><div class="qty">2 a 3 maços</div></div>
+      <input class="price" type="number" min="0" step="0.01" placeholder="Preço R$">
+      <div class="cost"><div class="cost-label">Custo</div><span>R$ 0,00</span></div>
+    </div>
+
+    <div class="item">
+      <input type="checkbox" onchange="update()">
+      <div><div class="name">Sal</div><div class="qty">a gosto</div></div>
+      <input class="price" type="number" min="0" step="0.01" placeholder="Preço R$">
+      <div class="cost"><div class="cost-label">Custo</div><span>R$ 0,00</span></div>
+    </div>
+
+    <div class="item">
+      <input type="checkbox" onchange="update()">
+      <div><div class="name">Pimenta-do-reino</div><div class="qty">a gosto</div></div>
+      <input class="price" type="number" min="0" step="0.01" placeholder="Preço R$">
+      <div class="cost"><div class="cost-label">Custo</div><span>R$ 0,00</span></div>
+    </div>
+  </div>
+
+  <div class="footer">
+    Os valores acima são as quantidades planejadas para 20 pessoas. Para itens vendidos em embalagem fechada, registre no campo de preço o valor efetivamente pago pela embalagem.
+    O cálculo do custo soma os valores preenchidos.
+  </div>
+</div>
+
+<script>
+function money(v) {
+  return v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+}
+function saveState() {
+  const items = [...document.querySelectorAll('.item')].map(item => ({
+    checked: item.querySelector('input[type=checkbox]').checked,
+    price: item.querySelector('.price').value
+  }));
+  localStorage.setItem('listaComprasState', JSON.stringify(items));
+}
+
+function loadState() {
+  try {
+    const items = JSON.parse(localStorage.getItem('listaComprasState') || '[]');
+    document.querySelectorAll('.item').forEach((item, i) => {
+      if (!items[i]) return;
+      item.querySelector('input[type=checkbox]').checked = !!items[i].checked;
+      item.querySelector('.price').value = items[i].price || '';
+    });
+  } catch(e) {}
+}
+
+function update() {
+  let total = 0, bought = 0, count = 0;
+  document.querySelectorAll('.item').forEach(item => {
+    count++;
+    const cb = item.querySelector('input[type=checkbox]');
+    const price = item.querySelector('.price');
+    const costSpan = item.querySelector('.cost span');
+    const value = parseFloat(price.value) || 0;
+    total += value;
+    if (cb.checked) { bought++; item.classList.add('bought'); }
+    else item.classList.remove('bought');
+    costSpan.textContent = money(value);
+  });
+  document.getElementById('grandTotal').textContent = money(total);
+  document.getElementById('progress').textContent = bought + ' / ' + count;
+  saveState();
+}
+function markAll() {
+  document.querySelectorAll('input[type=checkbox]').forEach(x=>x.checked=true);
+  update();
+}
+function clearAll() {
+  document.querySelectorAll('input[type=checkbox]').forEach(x=>x.checked=false);
+  update();
+}
+document.querySelectorAll('.price').forEach(x=>x.addEventListener('input',update));
+loadState();
+update();
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('sw.js'));
+}
+</script>
+</body>
+</html>
