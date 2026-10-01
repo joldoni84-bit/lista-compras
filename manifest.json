@@ -1,10 +1,10 @@
 {
-  "name": "Lista de Compras — Arroz Cremoso",
-  "short_name": "Lista Compras",
+  "name": "MesaBoa",
+  "short_name": "MesaBoa",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#f5f5f5",
-  "theme_color": "#111827",
+  "background_color": "#f6f4ef",
+  "theme_color": "#243f38",
   "icons": [
     {
       "src": "icon-192.png",
